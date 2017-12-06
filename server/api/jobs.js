@@ -108,21 +108,21 @@ module.exports = function(server_storage) {
     }
     processRegistry.addProcess(node_filter_daterange);
 
-    function node_NDVI(args) {
-        const ret = imagery_node("NDVI", args);
+    function node_NDI(args) {
+        const ret = imagery_node("NDI", args);
 
         ret.buildJob = function () {
             const job = ret.buildImageryJob();
             job.numOutBands = 1;
-            job.addRequiredBand(ret.red);
-            job.addRequiredBand(ret.nir);
-            job.evalScript = job.evalScript + "  samples = samples.map(s => index(s." + ret.nir + ", s." + ret.red + "));\n";
+            job.addRequiredBand(ret.band1);
+            job.addRequiredBand(ret.band2);
+            job.evalScript = job.evalScript + "  samples = samples.map(s => index(s." + ret.band1 + ", s." + ret.band2 + "));\n";
             return job;
         }
 
         return ret;
     }
-    processRegistry.addProcess(node_NDVI);
+    processRegistry.addProcess(node_NDI);
 
     function node_min_time(args) {
         const ret = imagery_node("min_time", args);
