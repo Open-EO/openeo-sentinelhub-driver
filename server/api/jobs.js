@@ -116,7 +116,7 @@ module.exports = function(server_storage) {
             job.numOutBands = 1;
             job.addRequiredBand(ret.band1);
             job.addRequiredBand(ret.band2);
-            job.evalScript = job.evalScript + "  samples = samples.map(s => index(s." + ret.band1 + ", s." + ret.band2 + "));\n";
+            job.evalScript = job.evalScript + "  samples = samples.map(s => NDI(s." + ret.band1 + ", s." + ret.band2 + "));\n";
             return job;
         }
 
@@ -171,7 +171,7 @@ module.exports = function(server_storage) {
                 '};\n'
             scr = scr + 'const findMin = arr=> arr[findMinIndex(arr)];\n';
     
-            scr = scr + 'const index = (a, b) => (a - b) / (a + b);\n';
+            scr = scr + 'const NDI = (a, b) => (a - b) / (a + b);\n';
     
             scr = scr + 'const dateRangeFilter = (from, to) => {\n';
             scr = scr + '    return (scene => from < scene.date.getTime() && scene.date.getTime() < to);\n';
@@ -187,7 +187,7 @@ module.exports = function(server_storage) {
             scr = scr + '  return scenes;\n';
             scr = scr + '}\n\n';
     
-            scr = scr + 'function eval(samples, scenes) {\n';
+            scr = scr + 'function evaluatePixel(samples, scenes) {\n';
             scr = scr + this.evalScript + '\n';
             scr = scr + '  return samples;\n';
             scr = scr + '}\n';
