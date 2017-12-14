@@ -15,8 +15,8 @@
   "dependencies": {
     "@turf/bbox-clip": "^5.0.4",
     "@turf/bbox-polygon": "^5.0.4",
-    "express": "^4.16.2",
     "node-cache": "^4.1.1",
+    "request": "^2.83.0",
     "restify": "^6.3.4",
     "wellknown": "^0.5.0"
   }

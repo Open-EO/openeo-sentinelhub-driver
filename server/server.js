@@ -5,11 +5,17 @@ const server = restify.createServer();
 server.use(restify.plugins.queryParser());
 server.use(restify.plugins.bodyParser());
 
-const NodeCache = require( "node-cache" );
-server.storage = new NodeCache();
+const NodeCache = require('node-cache');
+const cache = new NodeCache();
 
-const routes = require('./api/routes')(server); //importing route
+server.use((req, res, next) => {
+  req.storage = cache;
+  next();
+})
 
-server.listen(8080, function() {
-  console.log('%s listening at %s', server.name, server.url);
-});
+const routes = require('./api/routes');
+
+const port = process.env.PORT || 8080
+routes(server).listen(port, () =>
+  console.log('%s listening at %s', server.name, server.url)
+);
