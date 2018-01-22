@@ -68,6 +68,14 @@ processRegistry.addProcess(node_filter_daterange);
 processRegistry.addProcess(node_NDI);
 processRegistry.addProcess(node_min_time);
 
+processRegistry.node_NDI = {
+  buildJob: function(procJsonArgs) {
+    buildImageryJob(procJsonArgs.imagery1);
+    buildImageryJob(procJsonArgs.imagery2);
+    doElse(procJsonArgs.band1, procJsonArgs.band2);
+  }
+};
+
 
 function doJob(server_storage, jobdesc) {
   console.log(`Job: ${JSON.stringify(jobdesc)}`);
