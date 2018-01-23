@@ -17,8 +17,6 @@ function clrPixel(ndvi) {
   return [0.9 - 0.8 * ndvi, 0.2 + 0.8 * ndvi, GLOBALCNT / 3, 1].map(toClrVal);
 }
 
-console.log(toClrVal(0.4));
-
 function recolor(tile) {
   const srcData = tile.originalImage;
   const ctx = tile.getContext('2d');
