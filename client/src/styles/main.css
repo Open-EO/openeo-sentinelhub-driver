@@ -1,0 +1,44 @@
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+#map {
+  width: 100%;
+  height: 100vh;
+}
+
+.map-wrapper {
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+}
+
+.tool-container {
+  position: absolute;
+  top: 0px;
+  /* right: 0px; */
+  width: 20%;
+  /* height: 100vh; */
+  z-index: 500;
+  right: 50%;
+  transform: translate(50%);
+}
+
+.right-wrapper {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 20%;
+  /* height: 100vh; */
+  z-index: 500;
+  background-color: white;
+}
+
+.right-wrapper pre {
+  background-color: white;
+  color: #494949;
+  height: 100vh;
+  margin: 10px;
+  overflow: auto;
+}
