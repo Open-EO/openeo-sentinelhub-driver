@@ -11,14 +11,18 @@ if (typeof Number.prototype.toRad === 'undefined') {
   };
 }
 
+var GLOBALCNT = 3;
+
 function toClrVal(a) {
   return a < 0 ? 0 : a > 1 ? 255 : Math.round(255 * a);
 }
 
 function clrPixel(ndvi) {
-  return [1 - ndvi, 1, 1, 1].map(toClrVal);
+  return [0.9 - 0.8*ndvi, 0.2 + 0.8*ndvi, GLOBALCNT/3, 1].map(toClrVal);
 }
+
 console.log(toClrVal(0.4));
+
 function recolor(tile) {
   const srcData = tile.originalImage;
   const ctx = tile.getContext('2d');
@@ -46,6 +50,21 @@ var tiles = L.tileLayer.wms(
     minZoom: 8
   }
 );
+
+function recolorTiles() {
+  console.log('RECOLOR '+GLOBALCNT);
+  tiles.recolor();
+}
+
+tiles.recolor = function() {
+  GLOBALCNT = (GLOBALCNT+1)%4;
+
+  for (var key in this._tiles) {
+    var tile = this._tiles[key];
+    recolor(tile.el);
+  }
+}
+
 tiles.createTile = function(coords) {
   const tile = L.DomUtil.create('canvas', 'leaflet-tile');
   tile.width = tile.height = this.options.tileSize;
@@ -81,7 +100,10 @@ function getTileURL(lat, lon, zoom) {
   );
   return '' + zoom + '/' + xtile + '/' + ytile;
 }
+
 map.on('mousemove', e => {
   console.log(getTileURL(e.latlng.lat, e.latlng.lng, map.getZoom()));
   const containerPoint = e.containerPoint;
 });
+
+document.getElementById('recolorButton').addEventListener('click', recolorTiles);
