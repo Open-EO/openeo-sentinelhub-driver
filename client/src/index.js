@@ -1,4 +1,6 @@
 import L from 'leaflet';
+import CodeMirror from 'codemirror';
+import '../node_modules/codemirror/lib/codemirror.css';
 import './styles/main.css';
 import '../node_modules/leaflet/dist/leaflet.css';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
@@ -89,3 +91,17 @@ map.on('mousemove', e => {
 document
   .getElementById('recolorButton')
   .addEventListener('click', recolorTiles);
+
+document.getElementById('runScript').addEventListener('click', runScript);
+
+const cm = CodeMirror(document.getElementById('editor'), {
+  value: 'function myScript() {\n    return 100;\n}',
+  mode: 'javascript',
+  indentUnit: 4,
+  lineNumbers: true
+});
+
+function runScript() {
+  const scriptArea = document.getElementById('firstTextArea');
+  console.log(cm.getValue());
+}

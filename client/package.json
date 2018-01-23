@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "axios": "^0.17.1",
+    "codemirror": "^5.33.0",
     "leaflet": "^1.2.0"
   },
   "proxy": "http://localhost:8080/"

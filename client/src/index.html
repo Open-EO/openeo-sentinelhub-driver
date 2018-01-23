@@ -7,16 +7,22 @@
 
 <body>
 
-    <div id="map" style="margin-left: 300px;">
-        <div class="tool-container">
-            <input type="date" id="tileDate">
-        </div>
-        <div class="right-wrapper">
-            <form id="layers">
-            </form>
-        </div>
+    <div id="map">
+
     </div>
-    <button id="recolorButton" style="position: absolute; left: 0; top: 0;">CLICK ME</button>
+    <div class="tool-container">
+        <input type="date" id="tileDate">
+    </div>
+    <div class="right-wrapper">
+        <button id="recolorButton" style="position: absolute; left: 0; top: 0;">CLICK ME</button>
+        <h2>Readonly</h2>
+
+        <div>
+            <div id="editor"></div>
+            <button id="runScript" class="btn btn-default">Run Script</button>
+        </div>
+
+    </div>
     <script src="bundle.js"></script>
 </body>
 
