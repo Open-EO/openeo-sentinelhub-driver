@@ -90,16 +90,28 @@ document
   .getElementById('recolorButton')
   .addEventListener('click', recolorTiles);
 
-document.getElementById('runScript').addEventListener('click', runScript);
+document
+  .getElementById('runProsScript')
+  .addEventListener('click', runProsScript);
+document.getElementById('runVisScript').addEventListener('click', runVisScript);
 
-const cm = CodeMirror(document.getElementById('editor'), {
+const processingScript = CodeMirror(document.getElementById('proseditor'), {
   value: 'function myScript() {\n    return 100;\n}',
   mode: 'javascript',
   indentUnit: 4,
   lineNumbers: true
 });
-
-function runScript() {
+const visualisationScript = CodeMirror(document.getElementById('viseditor'), {
+  value: 'function myScript() {\n    return 100;\n}',
+  mode: 'javascript',
+  indentUnit: 4,
+  lineNumbers: true
+});
+function runProsScript() {
   const scriptArea = document.getElementById('firstTextArea');
-  console.log(cm.getValue());
+  console.log(processingScript.getValue());
+}
+function runVisScript() {
+  const scriptArea = document.getElementById('firstTextArea');
+  console.log(visualisationScript.getValue());
 }
