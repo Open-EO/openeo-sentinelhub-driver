@@ -7,7 +7,8 @@ import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
-var GLOBALCNT = 3;
+let GLOBALCNT = 3;
+let evalScipt;
 
 function toClrVal(a) {
   return a < 0 ? 0 : a > 1 ? 255 : Math.round(255 * a);
@@ -21,13 +22,29 @@ function recolor(tile) {
   const srcData = tile.originalImage;
   const ctx = tile.getContext('2d');
   const tgtData = ctx.getImageData(0, 0, tile.width, tile.height);
-  for (var i = 0; i < tgtData.data.length; i += 4) {
-    const pxClrs = clrPixel(tile.originalImage.data[i] / 255 * 2 - 1);
-    tgtData.data[i] = pxClrs[0];
-    tgtData.data[i + 1] = pxClrs[1];
-    tgtData.data[i + 2] = pxClrs[2];
-    tgtData.data[i + 3] = pxClrs[3];
+
+  if (evalScipt) {
+    const esFun = eval('(function(input) {' + evalScipt + '})');
+    for (var i = 0; i < tgtData.data.length; i += 4) {
+      const input = tile.originalImage.data[i] / 255 * 2 - 1;
+      const es = esFun(input);
+      tgtData.data[i] = es[0];
+      tgtData.data[i + 1] = es[1];
+      tgtData.data[i + 2] = es[2];
+      tgtData.data[i + 3] = es[3];
+      //console.log(tgtData);
+    }
+  } else {
+    for (var i = 0; i < tgtData.data.length; i += 4) {
+      const input = tile.originalImage.data[i] / 255 * 2 - 1;
+      const pxClrs = clrPixel(input);
+      tgtData.data[i] = pxClrs[0];
+      tgtData.data[i + 1] = pxClrs[1];
+      tgtData.data[i + 2] = pxClrs[2];
+      tgtData.data[i + 3] = pxClrs[3];
+    }
   }
+
   ctx.putImageData(tgtData, 0, 0);
 }
 
@@ -102,7 +119,19 @@ const processingScript = CodeMirror(document.getElementById('proseditor'), {
   lineNumbers: true
 });
 const visualisationScript = CodeMirror(document.getElementById('viseditor'), {
-  value: 'function myScript() {\n    return 100;\n}',
+  value: `
+
+    function toClrVal(a) {
+      return a < 0 ? 0 : a > 1 ? 255 : Math.round(255 * a);
+    }
+    
+    return [
+    0.9 - 0.8 * input, 
+    0.2 + 0.8 * input, 
+    1, 
+    1].map(toClrVal);
+    
+    `,
   mode: 'javascript',
   indentUnit: 4,
   lineNumbers: true
@@ -113,5 +142,6 @@ function runProsScript() {
 }
 function runVisScript() {
   const scriptArea = document.getElementById('firstTextArea');
-  console.log(visualisationScript.getValue());
+  evalScipt = visualisationScript.getValue();
+  recolorTiles();
 }
