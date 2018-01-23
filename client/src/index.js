@@ -5,12 +5,6 @@ import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
 
-if (typeof Number.prototype.toRad === 'undefined') {
-  Number.prototype.toRad = function() {
-    return this * Math.PI / 180;
-  };
-}
-
 var GLOBALCNT = 3;
 
 function toClrVal(a) {
@@ -18,7 +12,7 @@ function toClrVal(a) {
 }
 
 function clrPixel(ndvi) {
-  return [0.9 - 0.8*ndvi, 0.2 + 0.8*ndvi, GLOBALCNT/3, 1].map(toClrVal);
+  return [0.9 - 0.8 * ndvi, 0.2 + 0.8 * ndvi, GLOBALCNT / 3, 1].map(toClrVal);
 }
 
 console.log(toClrVal(0.4));
@@ -52,18 +46,18 @@ var tiles = L.tileLayer.wms(
 );
 
 function recolorTiles() {
-  console.log('RECOLOR '+GLOBALCNT);
+  console.log('RECOLOR ' + GLOBALCNT);
   tiles.recolor();
 }
 
 tiles.recolor = function() {
-  GLOBALCNT = (GLOBALCNT+1)%4;
+  GLOBALCNT = (GLOBALCNT + 1) % 4;
 
   for (var key in this._tiles) {
     var tile = this._tiles[key];
     recolor(tile.el);
   }
-}
+};
 
 tiles.createTile = function(coords) {
   const tile = L.DomUtil.create('canvas', 'leaflet-tile');
@@ -88,22 +82,10 @@ L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 tiles.addTo(map);
 
-function getTileURL(lat, lon, zoom) {
-  var xtile = parseInt(Math.floor((lon + 180) / 360 * (1 << zoom)));
-  var ytile = parseInt(
-    Math.floor(
-      (1 -
-        Math.log(Math.tan(lat.toRad()) + 1 / Math.cos(lat.toRad())) / Math.PI) /
-        2 *
-        (1 << zoom)
-    )
-  );
-  return '' + zoom + '/' + xtile + '/' + ytile;
-}
-
 map.on('mousemove', e => {
-  console.log(getTileURL(e.latlng.lat, e.latlng.lng, map.getZoom()));
   const containerPoint = e.containerPoint;
 });
 
-document.getElementById('recolorButton').addEventListener('click', recolorTiles);
+document
+  .getElementById('recolorButton')
+  .addEventListener('click', recolorTiles);
