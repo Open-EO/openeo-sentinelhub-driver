@@ -4,6 +4,7 @@ const errors = require('restify-errors')
 const JobData = require('./JobData')
 
 const { createJobCacheKey } = require('./util')
+const { URLSearchParams } = require('url')
 
 function wcs_get (req, res, next) {
   const jobId = req.params.job_id
@@ -23,11 +24,8 @@ function wcs_get (req, res, next) {
     }
   }
 
-  console.log(sUrl)
-  console.log(JSON.stringify(sQueryParams))
-
-  res.header('job_id', jobId)
-  res.header('job_script', job.script)
+  const params = new URLSearchParams(sQueryParams)
+  console.log(sUrl + '?' + params.toString())
   request({ url: sUrl, qs: sQueryParams }).pipe(res)
 
   next()

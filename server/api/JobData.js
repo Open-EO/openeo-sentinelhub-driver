@@ -1,24 +1,26 @@
 class JobData {
-  constructor(other_job) {
-    this.source = null;
-    this.inBands = [];
-    this.numOutBands = 0;
-    this.filterScript = [];
-    this.evalScript = [];
-    this.geometry = null;
+  constructor (other_job) {
+    this.source = null
+    this.inBands = []
+    this.numOutBands = 0
+    this.filterScript = []
+    this.evalScript = []
+    this.geometry = null
+    this.minTime = null
+    this.maxTime = null
 
     if (other_job) {
-      Object.assign(this, other_job);
+      Object.assign(this, other_job)
     }
   }
 
-  addRequiredBand(bandId) {
+  addRequiredBand (bandId) {
     if (!this.inBands.includes(bandId)) {
-      this.inBands.push(bandId);
+      this.inBands.push(bandId)
     }
   }
 
-  generateScript() {
+  generateScript () {
     return `
       const findMinIndex = arr => {
         let min = Infinity;
