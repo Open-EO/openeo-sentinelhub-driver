@@ -54,7 +54,7 @@ function recolor(tile) {
 var map = new L.Map('map', { center: [45, 15], zoom: 8 });
 
 var tiles = L.tileLayer.wms(
-  'http://localhost:8080/download/1a565a00-005f-11e8-99ca-934d8aba7f74/wcs',
+  'http://localhost:8080/download/<placeholder>/wcs',
   {
     request: 'GetCoverage',
     service: 'WCS',
@@ -116,10 +116,10 @@ document
 document.getElementById('runVisScript').addEventListener('click', runVisScript);
 
 const processingScript = CodeMirror(document.getElementById('proseditor'), {
-  value: `return openeo.imagecollection('Sentinel2A-L1C')
-      .date_range_filter("2016-01-01","2016-03-10")
+  value: `return openEO.imagecollection('Sentinel2A-L1C')
+      .filter_daterange("2016-01-01","2016-03-10")
       .NDI(8,4)
-      .min_time());`,
+      .max_time();`,
       //.bbox_filter([16.1, 47.9, 16.6, 48.6], "EPSG:4326")
   mode: 'javascript',
   indentUnit: 4,
@@ -143,12 +143,22 @@ const visualisationScript = CodeMirror(document.getElementById('viseditor'), {
   indentUnit: 4,
   lineNumbers: true
 });
+
 function runProsScript() {
   const scriptArea = document.getElementById('firstTextArea');
-  var graph = oeo.prepareScript(processingScript.getValue());
+  const graph = openEO.parseScript(processingScript.getValue());
+  openEO.createJob(graph).then(res => {
+    tiles.setUrl(openEO.getWcsUrl(res), false);
+    console.log(openEO.getWcsUrl(res));
+  });
 }
+
 function runVisScript() {
   const scriptArea = document.getElementById('firstTextArea');
   evalScipt = visualisationScript.getValue();
   recolorTiles();
 }
+
+
+
+

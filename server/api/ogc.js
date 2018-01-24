@@ -7,7 +7,7 @@ const jobDir = path.resolve(__dirname, '../jobs');
 
 const { createJobCacheKey } = require('./util');
 
-const debug = true;
+const debug = false;
 
 function wcs_get(req, res, next) {
   const job_id = req.params.job_id;
@@ -20,23 +20,22 @@ function wcs_get(req, res, next) {
     callback(null, data);
   });
 
-  const scr = cached_job
-    ? cached_job.generateScript()
-    : 'return [0.5 + 0.5 * (B08 - B04)/(B08 + B04)]';
-  const geom = cached_job ? cached_job.geometry : '';
-
-  const job = {
-    script: new Buffer(scr).toString('base64'),
-    geometry: geom
-  };
-
-  const sUrl =
-    'http://services.sentinel-hub.com/ogc/wcs/ef60cfb1-53db-4766-9069-c5369c3161e6';
+  const job = cached_job;
+  
+  const sUrl = 'http://services.sentinel-hub.com/ogc/wcs/ef60cfb1-53db-4766-9069-c5369c3161e6';
   const sQueryParams = req.query;
   sQueryParams.coverage = 'CUSTOM';
+  sQueryParams.temporal = 'true';
   sQueryParams.GEOMETRY = job.geometry ? wkt.stringify(job.geometry) : '';
-  sQueryParams.evalscript = job.script;
-
+  sQueryParams.evalscript = new Buffer(job.generateScript()).toString('base64');
+  if (job.maxTime) {
+    if (job.minTime) {
+      sQueryParams.time = job.minTime + '/' + job.maxTime;
+    } else {
+      sQueryParams.time = job.maxTime;
+    }
+  }
+  
   console.log(sUrl);
   console.log(JSON.stringify(sQueryParams));
 
