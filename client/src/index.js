@@ -6,9 +6,12 @@ import '../node_modules/leaflet/dist/leaflet.css';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+import {initOpenEO} from './open-eo.js';
 
 let GLOBALCNT = 3;
 let evalScipt;
+
+var openEO = initOpenEO();
 
 function toClrVal(a) {
   return a < 0 ? 0 : a > 1 ? 255 : Math.round(255 * a);
@@ -51,7 +54,7 @@ function recolor(tile) {
 var map = new L.Map('map', { center: [45, 15], zoom: 8 });
 
 var tiles = L.tileLayer.wms(
-  'http://localhost:8080/download/8b055750-da63-11e7-a7b4-717018423482/wcs',
+  'http://localhost:8080/download/1a565a00-005f-11e8-99ca-934d8aba7f74/wcs',
   {
     request: 'GetCoverage',
     service: 'WCS',
@@ -113,7 +116,11 @@ document
 document.getElementById('runVisScript').addEventListener('click', runVisScript);
 
 const processingScript = CodeMirror(document.getElementById('proseditor'), {
-  value: 'function myScript() {\n    return 100;\n}',
+  value: `return openeo.imagecollection('Sentinel2A-L1C')
+      .date_range_filter("2016-01-01","2016-03-10")
+      .NDI(8,4)
+      .min_time());`,
+      //.bbox_filter([16.1, 47.9, 16.6, 48.6], "EPSG:4326")
   mode: 'javascript',
   indentUnit: 4,
   lineNumbers: true
@@ -138,7 +145,7 @@ const visualisationScript = CodeMirror(document.getElementById('viseditor'), {
 });
 function runProsScript() {
   const scriptArea = document.getElementById('firstTextArea');
-  console.log(processingScript.getValue());
+  var graph = oeo.prepareScript(processingScript.getValue());
 }
 function runVisScript() {
   const scriptArea = document.getElementById('firstTextArea');

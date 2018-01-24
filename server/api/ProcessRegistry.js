@@ -1,3 +1,4 @@
+const errors = require('restify-errors');
 const { node_product } = require('./util')
 
 class ProcessRegistry {
@@ -16,7 +17,7 @@ class ProcessRegistry {
       return node_product(product_id);
     }
 
-    throw error.BadRequestError('Unknown node type - no "process_id" or "product_id"');
+    throw new errors.BadRequestError('Unknown node type - no "process_id" or "product_id"; JSON was '+JSON.stringify(json));
   }
 
   findNode(process_id, args) {

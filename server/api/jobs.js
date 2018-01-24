@@ -5,14 +5,17 @@ const turf = {
 };
 
 const ProcessRegistry = require('./ProcessRegistry')
-const { createJobCacheKey, imagery_node } = require('./util')
+const { createJobCacheKey, collections_node } = require('./util')
 
 
 function node_filter_bbox(args) {
-  const ret = imagery_node(processRegistry, 'filter_bbox', args);
+  const ret = collections_node(processRegistry, 'filter_bbox', args);
   ret.buildJob = () => {
-    const job = ret.buildImageryJob();
-    const boxArr = [args.left, args.bottom, args.right, args.top];
+    const job = ret.buildCollectionsJob();
+    if (args.srs != "EPSG:4326") {
+      throw new Error("Only 4326 BBOX CRS is supported");
+    }
+    const boxArr = args.bbox;
     if (job.geometry) {
       job.geometry = turf.bboxClip(job.geometry, boxArr)
     } else {
@@ -25,10 +28,10 @@ function node_filter_bbox(args) {
 }
 
 function node_filter_daterange(args) {
-  const ret = imagery_node(processRegistry, 'filter_daterange', args);
+  const ret = collections_node(processRegistry, 'filter_daterange', args);
 
   ret.buildJob = () => {
-    const job = ret.buildImageryJob();
+    const job = ret.buildCollectionsJob();
     job.filterScript.push(`scenes = scenes.filter(dateRangeFilter(Date.parse('${ret.from}'),Date.parse('${ret.to}')));`);
     return job;
   }
@@ -37,10 +40,9 @@ function node_filter_daterange(args) {
 }
 
 function node_NDI(args) {
-  const ret = imagery_node(processRegistry, 'NDI', args);
-
+  const ret = collections_node(processRegistry, 'NDI', args);
   ret.buildJob = () => {
-    const job = ret.buildImageryJob();
+    const job = ret.buildCollectionsJob();
     job.numOutBands = 1;
     job.addRequiredBand(ret.band1);
     job.addRequiredBand(ret.band2);
@@ -52,10 +54,10 @@ function node_NDI(args) {
 }
 
 function node_min_time(args) {
-  const ret = imagery_node(processRegistry, 'min_time', args);
+  const ret = collections_node(processRegistry, 'min_time', args);
 
   ret.buildJob = function () {
-    const job = ret.buildImageryJob();
+    const job = ret.buildCollectionsJob();
     job.evalScript.push('samples = [findMin(samples)];');
     return job;
   }
@@ -68,18 +70,10 @@ processRegistry.addProcess(node_filter_daterange);
 processRegistry.addProcess(node_NDI);
 processRegistry.addProcess(node_min_time);
 
-processRegistry.node_NDI = {
-  buildJob: function(procJsonArgs) {
-    buildImageryJob(procJsonArgs.imagery1);
-    buildImageryJob(procJsonArgs.imagery2);
-    doElse(procJsonArgs.band1, procJsonArgs.band2);
-  }
-};
-
-
 function doJob(server_storage, jobdesc) {
-  console.log(`Job: ${JSON.stringify(jobdesc)}`);
+  console.log(`Job: ` + typeof(jobdesc) + ' ::: ' + jobdesc);
   console.log(`Processes: ${JSON.stringify(processRegistry)}`);
+  console.log(`ProcGraph: ${JSON.stringify(jobdesc['process_graph'])}`);
   const rootNode = processRegistry.buildNode(jobdesc['process_graph']);
   console.log(`Root Node: ${JSON.stringify(rootNode)}`);
 
@@ -87,8 +81,8 @@ function doJob(server_storage, jobdesc) {
   console.log(`Job: ${JSON.stringify(job)}`);
   console.log(`\n Script:\n${job.generateScript()}`);
 
-  // const uuid = require('node-uuid').v1();
-  const uuid = '8b055750-da63-11e7-a7b4-717018423482';
+  const uuid = require('node-uuid').v1();
+  //const uuid = '8b055750-da63-11e7-a7b4-717018423482';
 
   server_storage.set(createJobCacheKey(uuid), job);
 
@@ -99,19 +93,11 @@ function doJob(server_storage, jobdesc) {
 
 
 function job_post(req, res, next) {
-  try {
     console.log(typeof req.body);
-    const j = doJob(req.storage, req.body)
+    const j = doJob(req.storage, JSON.parse(req.body));
 
     res.json(j);
     return next();
-  } catch (e) {
-    if (e instanceof errors.HttpError) {
-      return next(e);
-    }
-
-    throw e;
-  }
 }
 
 module.exports = {
