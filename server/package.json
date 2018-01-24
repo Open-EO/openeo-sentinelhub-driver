@@ -10,7 +10,8 @@
   "author": "Miha Kadunc <miha.kadunc@sinergise.com>",
   "license": "ISC",
   "devDependencies": {
-    "nodemon": "^1.12.1"
+    "nodemon": "^1.12.1",
+    "standard": "^10.0.3"
   },
   "dependencies": {
     "@turf/bbox-clip": "^5.0.4",
