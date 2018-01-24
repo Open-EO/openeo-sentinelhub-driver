@@ -15,7 +15,9 @@
   "dependencies": {
     "@turf/bbox-clip": "^5.0.4",
     "@turf/bbox-polygon": "^5.0.4",
+    "mz": "^2.7.0",
     "node-cache": "^4.1.1",
+    "node-uuid": "^1.4.8",
     "request": "^2.83.0",
     "restify": "^6.3.4",
     "restify-cors-middleware": "^1.1.0",

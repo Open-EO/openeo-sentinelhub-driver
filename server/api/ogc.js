@@ -1,6 +1,9 @@
 const request = require('request');
 const wkt = require('wellknown');
 const errors = require('restify-errors');
+const fs = require('fs');
+const path = require('path');
+const jobDir = path.resolve(__dirname, '../jobs');
 
 const { createJobCacheKey } = require('./util');
 
@@ -9,28 +12,31 @@ const debug = true;
 function wcs_get(req, res, next) {
   const job_id = req.params.job_id;
   const server_storage = req.storage;
-
-  const cached_job =server_storage.get(createJobCacheKey(job_id));
-  if (!cached_job) {
-    if (!debug) {
-      return next(new errors.NotFoundError(`job: ${job_id}`));
+  const cached_job = fs.readFile(jobDir + `/${job_id}.json`, (data, err) => {
+    return new errors.NotFoundError(`job: ${job_id}`);
+    if (err) {
     }
-  }
+    console.log(data);
+    callback(null, data);
+  });
 
-  const scr = cached_job ? cached_job.generateScript() : "return [0.5 + 0.5 * (B08 - B04)/(B08 + B04)]";
+  const scr = cached_job
+    ? cached_job.generateScript()
+    : 'return [0.5 + 0.5 * (B08 - B04)/(B08 + B04)]';
   const geom = cached_job ? cached_job.geometry : '';
 
-  const job =  {
+  const job = {
     script: new Buffer(scr).toString('base64'),
-    geometry: geom,
+    geometry: geom
   };
 
-  const sUrl = 'http://services.sentinel-hub.com/ogc/wcs/ef60cfb1-53db-4766-9069-c5369c3161e6';
+  const sUrl =
+    'http://services.sentinel-hub.com/ogc/wcs/ef60cfb1-53db-4766-9069-c5369c3161e6';
   const sQueryParams = req.query;
   sQueryParams.coverage = 'CUSTOM';
   sQueryParams.GEOMETRY = job.geometry ? wkt.stringify(job.geometry) : '';
   sQueryParams.evalscript = job.script;
-  
+
   console.log(sUrl);
   console.log(JSON.stringify(sQueryParams));
 
@@ -43,4 +49,4 @@ function wcs_get(req, res, next) {
 
 module.exports = {
   wcs_get
-}
+};
