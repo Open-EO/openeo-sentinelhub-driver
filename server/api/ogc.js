@@ -8,7 +8,11 @@ const { URLSearchParams } = require('url')
 
 function wcs_get (req, res, next) {
   const jobId = req.params.job_id
-  const job = new JobData(req.storage.get(createJobCacheKey(jobId)))
+  const cachedJob = req.storage.get(createJobCacheKey(jobId))
+  if (!cachedJob) {
+    return next(new errors.NotFoundError())
+  }
+  const job = new JobData(cachedJob)
 
   const sUrl = 'http://services.sentinel-hub.com/ogc/wcs/ef60cfb1-53db-4766-9069-c5369c3161e6'
   const sQueryParams = req.query

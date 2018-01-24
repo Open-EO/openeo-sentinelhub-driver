@@ -33,8 +33,8 @@ var tiles = L.tileLayer.wms(
     request: 'GetCoverage',
     service: 'WCS',
     coverage: 'CUSTOM',
-    format: 'image/png',
-    tileSize: 512,
+    format: 'image/jpeg',
+    tileSize: 256,
     minZoom: 8
   }
 )
