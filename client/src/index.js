@@ -6,7 +6,7 @@ import '../node_modules/leaflet/dist/leaflet.css';
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
 import iconUrl from 'leaflet/dist/images/marker-icon.png';
 import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
-import {initOpenEO} from './open-eo.js';
+import { initOpenEO } from './open-eo.js';
 
 let GLOBALCNT = 3;
 let evalScipt;
@@ -70,7 +70,7 @@ function recolorTiles() {
   tiles.recolor();
 }
 
-tiles.recolor = function() {
+tiles.recolor = function () {
   GLOBALCNT = (GLOBALCNT + 1) % 4;
 
   for (var key in this._tiles) {
@@ -79,13 +79,13 @@ tiles.recolor = function() {
   }
 };
 
-tiles.createTile = function(coords) {
+tiles.createTile = function (coords) {
   const tile = L.DomUtil.create('canvas', 'leaflet-tile');
   tile.width = tile.height = this.options.tileSize;
 
   const imageObj = new Image();
   imageObj.crossOrigin = '';
-  imageObj.onload = function() {
+  imageObj.onload = function () {
     const ctx = tile.getContext('2d');
     ctx.drawImage(imageObj, 0, 0);
 
@@ -107,10 +107,6 @@ map.on('mousemove', e => {
 });
 
 document
-  .getElementById('recolorButton')
-  .addEventListener('click', recolorTiles);
-
-document
   .getElementById('runProsScript')
   .addEventListener('click', runProsScript);
 document.getElementById('runVisScript').addEventListener('click', runVisScript);
@@ -119,8 +115,8 @@ const processingScript = CodeMirror(document.getElementById('proseditor'), {
   value: `return openEO.imagecollection('Sentinel2A-L1C')
       .filter_daterange("2016-01-01","2016-03-10")
       .NDI(8,4)
-      .max_time();`,
-      //.bbox_filter([16.1, 47.9, 16.6, 48.6], "EPSG:4326")
+      .min_time());`,
+  //.bbox_filter([16.1, 47.9, 16.6, 48.6], "EPSG:4326")
   mode: 'javascript',
   indentUnit: 4,
   lineNumbers: true

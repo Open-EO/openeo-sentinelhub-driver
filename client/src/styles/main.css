@@ -4,7 +4,7 @@ body {
 }
 
 #map {
-  width: 100%;
+  width: 50%;
   height: 100vh;
 }
 
@@ -29,8 +29,23 @@ body {
   position: absolute;
   top: 0px;
   right: 0px;
-  width: 20%;
+  width: 50%;
   height: 100vh;
   z-index: 500;
   background-color: white;
+  overflow-y: auto;
+}
+.script{
+ 
+  border: solid 1px #676767;
+    margin: 5px;
+
+    
+}
+.script button{
+  margin-left: 30em;
+}
+.scriptHeader{
+  background-color: #eee;
+  text-align: center;
 }
