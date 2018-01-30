@@ -5,8 +5,11 @@ module.exports = function(server) {
   const ogc = require('./ogc');
 
   server.get('/capabilities',     data.capabilities_get);
+  
+  server.get('/data', data.data_get);
   server.get('/data/:product_id', data.data_byId_get);
 
+  server.get('/processes', processes.process_get)
   server.get('/processes/:process_id', processes.process_byId_get)
 
   server.post('/jobs', jobs.job_post);
