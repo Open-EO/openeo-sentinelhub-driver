@@ -55,7 +55,7 @@ function normalizeBandId (b) {
 }
 
 function node_NDI (args) {
-  const ret = collections_node(processRegistry, 'NDI', args)
+  const ret = collections_node(processRegistry, 'NDVI', args)
   ret.buildJob = () => {
     const b1 = normalizeBandId(ret.band1)
     const b2 = normalizeBandId(ret.band2)

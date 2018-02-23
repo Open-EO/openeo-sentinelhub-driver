@@ -4,14 +4,18 @@ module.exports = function(server) {
   const jobs = require('./jobs');
   const ogc = require('./ogc');
 
-  server.get('/capabilities',     data.capabilities_get);
+  server.get('/capabilities', data.capabilities_get);
+  
+  server.get('/data', data.data_get);
   server.get('/data/:product_id', data.data_byId_get);
 
-  server.get('/processes/:process_id', processes.process_byId_get)
+  server.get('/processes', processes.process_get);
+  server.get('/processes/:process_id', processes.process_byId_get);
 
   server.post('/jobs', jobs.job_post);
 
-  server.get('/download/:job_id/wcs', ogc.wcs_get);
+  // This is a proprietary extension and is not API compliant
+  server.get('/wcs/:job_id', ogc.wcs_get);
 
   return server;
 };

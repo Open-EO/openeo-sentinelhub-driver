@@ -24,18 +24,20 @@ function node(process_id_val, argsVal) {
 function collections_node(processRegistry, process_id_val, argsVal) {
   const ret = node(process_id_val, argsVal);
 
-  if (ret.collections) {
-    ret.collections = ret.collections.map((coll) => processRegistry.buildNode(coll));
+  if (typeof ret.imagery === 'array') {
+    ret.imagery = ret.imagery.map((coll) => processRegistry.buildNode(coll));
+  } else if (ret.imagery !== null && typeof ret.imagery === 'object') {
+    ret.imagery = [ processRegistry.buildNode(ret.imagery) ];
   } else if (argsVal) {
-    throw new Error(`Missing 'collections' argument: ${JSON.stringify(argsVal)}`);
+    throw new Error(`Missing 'imagery' argument: ${JSON.stringify(argsVal)}`);
   }
 
   ret.buildCollectionsJob = () => {
-    if (ret.collections.length != 1) {
+    if (ret.imagery.length != 1) {
       console.log("ERROR: "+JSON.stringify(ret));
-      throw new Error('Collections with more than 1 element are not supported (was '+ret+')');
+      throw new Error('Image collections with more than 1 element are not supported (was '+ret+')');
     }
-    return new JobData(ret.collections[0].buildJob());
+    return new JobData(ret.imagery[0].buildJob());
   };
   return ret;
 }
