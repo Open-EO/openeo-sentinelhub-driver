@@ -14,7 +14,7 @@ Content-Type: application/json
     	"process_id": "min_time",
     	"args": {
     		"imagery" : {
-        		"process_id": "NDI",
+        		"process_id": "NDVI",
         		"args": {
         			"imagery": {
             			"process_id": "filter_daterange",
