@@ -101,7 +101,7 @@ processRegistry.addProcess(node_min_time)
 processRegistry.addProcess(node_max_time)
 
 function doJob (serverStorage, jobdesc) {
-  const rootNode = processRegistry.buildNode(jobdesc['process_graph'])
+  const rootNode = processRegistry.buildNode(jobdesc.process_graph)
   const job = rootNode.buildJob()
 
   console.log(`Job: ${JSON.stringify(job)}`)
@@ -109,14 +109,27 @@ function doJob (serverStorage, jobdesc) {
 
   const uuid = require('node-uuid').v1()
   serverStorage.set(createJobCacheKey(uuid), job)
+
+  const now = new Date();
+  
   return {
-    job_id: uuid
+    job_id: uuid,
+    status: 'submitted',
+    submitted: now.toISOString(),
+    updated: now.toISOString(),
+    user_id: null,
+    consumed_credits: 0
   }
 }
 
 function job_post (req, res, next) {
-  const j = doJob(req.storage, JSON.parse(req.body))
-  res.json(j)
+  try {
+    const response = doJob(req.storage, req.body)
+    res.json(response)
+  } catch (e) {
+    console.log(e)
+    res.send(500)
+  }
   return next()
 }
 

@@ -27,7 +27,7 @@ class ProcessRegistry {
       return procDef.fun(args);
     }
 
-    throw errors.BadRequestError('Unknown process id: ' + process_id);
+    throw new errors.BadRequestError('Unknown process id: ' + process_id);
   }
 
   addProcess(proc) {
