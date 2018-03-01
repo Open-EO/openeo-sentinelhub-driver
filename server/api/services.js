@@ -1,4 +1,4 @@
-const { createJobCacheKey, createServiceCacheKey } = require('./util')
+const { createJobCacheKey, createServiceCacheKey, getWmsUrl } = require('./util')
 
 function services_post (req, res, next) {
   try {
@@ -20,12 +20,10 @@ function services_post (req, res, next) {
     req.storage.set(createServiceCacheKey(uuid), serviceInput)
 	
 	console.log("created service with id: " + uuid);
-	
-	var baseUrl = req.serverUrl.replace('[::]', '127.0.0.1');
-	
+
     res.json({
       service_id: uuid,
-      service_url: baseUrl + '/wms/' + uuid,
+      service_url: getWmsUrl(req, uuid),
 	  service_type: serviceInput.service_type,
       service_args: {},
       job_id: serviceInput.job_id

@@ -8,6 +8,11 @@ function createServiceCacheKey(uuid) {
   return `service.${uuid}`
 }
 
+function getWmsUrl(req, service_id) {
+	var baseUrl = req.serverUrl.replace('[::]', '127.0.0.1');
+	return baseUrl + '/wms/' + service_id;
+}
+
 function node(process_id_val, argsVal) {
   const ret = {};
 
@@ -58,5 +63,6 @@ module.exports = {
   createJobCacheKey,
   createServiceCacheKey,
   node_product,
-  collections_node
+  collections_node,
+  getWmsUrl
 }
