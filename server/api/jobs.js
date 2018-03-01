@@ -43,28 +43,14 @@ function node_filter_daterange (args) {
   return ret
 }
 
-function normalizeBandId (b) {
-  var bS = b.toString()
-  if (bS.length < 2) {
-    return 'B0' + bS
-  } else if (bS.length < 3) {
-    return 'B' + bS
-  } else {
-    return bS
-  }
-}
-
 function node_NDI (args) {
   const ret = collections_node(processRegistry, 'NDVI', args)
   ret.buildJob = () => {
-    const b1 = normalizeBandId(ret.band1)
-    const b2 = normalizeBandId(ret.band2)
-
     const job = ret.buildCollectionsJob()
     job.numOutBands = 1
-    job.addRequiredBand(b1)
-    job.addRequiredBand(b2)
-    job.evalScript.push(`samples = samples.map(s => NDI(s.${b1}, s.${b2}));`)
+    job.addRequiredBand(ret.red)
+    job.addRequiredBand(ret.nir)
+    job.evalScript.push(`samples = samples.map(s => NDI(s.${ret.red}, s.${ret.nir}));`)
     return job
   }
 

@@ -36,8 +36,8 @@ Content-Type: application/json
             				"to": "2017-01-31"
             			}
         			},
-			        "band1": "B08",
-        			"band2": "B04"
+			        "red": "B04",
+        			"nir": "B08"
         		}
             }
         }
