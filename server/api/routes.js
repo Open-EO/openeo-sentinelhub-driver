@@ -25,6 +25,7 @@ module.exports = function(server) {
   server.get('/users/:user_id/credits', users.user_credits);
 
   server.post('/services', services.services_post);
+  server.del('/services/:service_id', services.services_delete);
 
   // This is a proprietary extension and is not API compliant
   server.get('/wms/:service_id', ogc.wms_get);

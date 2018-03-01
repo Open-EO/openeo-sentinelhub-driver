@@ -19,7 +19,7 @@ function services_post (req, res, next) {
     const uuid = require('node-uuid').v1()
     req.storage.set(createServiceCacheKey(uuid), serviceInput)
 	
-	console.log("created service with id: " + uuid);
+	console.log("created service (" + serviceInput.service_type + ") with id: " + uuid);
 
     res.json({
       service_id: uuid,
@@ -35,6 +35,14 @@ function services_post (req, res, next) {
   return next()
 }
 
+function services_delete(req, res, next) {
+	req.storage.expire(createServiceCacheKey(req.params.service_id));
+	console.log("deleted service with id: " + req.params.service_id);
+	res.send(200);
+	return next();
+}
+
 module.exports = {
-  services_post
+  services_post,
+  services_delete
 }

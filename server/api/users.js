@@ -6,20 +6,6 @@ function user_credits(req, res, next) {
 	return next();
 }
 
-function delete_user_jobs(req, res, next) {
-	req.storage.expiry(createJobCacheKey(req.params.job_id));
-	console.log("deleted job with id: " + req.params.job_id);
-	res.send(200);
-	return next();
-}
-
-function delete_user_services(req, res, next) {
-	req.storage.expiry(createServiceCacheKey(req.params.service_id));
-	console.log("deleted service with id: " + req.params.service_id);
-	res.send(200);
-	return next();
-}
-
 function user_jobs(req, res, next) {
 	var data = req.storage.getAll();
 	var result = [];
@@ -47,7 +33,6 @@ function user_services(req, res, next) {
 	var result = [];
 	for(var i in data) {
 		var elem = data[i];
-		console.log(elem);
 		if (elem.key.indexOf('service.') === -1) {
 			continue;
 		}
@@ -55,7 +40,7 @@ function user_services(req, res, next) {
 		result.push({
 			service_id: serviceId,
 			service_url: getWmsUrl(req, serviceId),
-			service_type: elem.val.type,
+			service_type: elem.val.service_type,
 			service_args: elem.val.service_args || {},
 			job_id: elem.val.job_id
 		});
@@ -90,8 +75,6 @@ function user_process_graphs(req, res, next) {
 
 module.exports = {
 	user_credits,
-	delete_user_jobs,
-	delete_user_services,
 	user_jobs,
 	user_services,
 	user_files,
