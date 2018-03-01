@@ -3,10 +3,10 @@
 
 ## Testing
 
+Host: `localhost:8080`
+
 Create a job by posting:
-```HTTP
-POST /jobs HTTP/1.1
-Host: localhost:8080
+```POST /jobs HTTP/1.1
 Content-Type: application/json
 
 {
@@ -45,8 +45,18 @@ Content-Type: application/json
 }
 ```
 
-Then retrieve an image through the OGC interface (it's called WCS, but it's actually a WMS at the moment):
-```HTTP
-GET /download/8b055750-da63-11e7-a7b4-717018423482/wcs?service=WMS&amp;request=GetMap HTTP/1.1
-Host: localhost:8080
+Afterwards create a service:
+```
+POST /services HTTP/1.1
+Content-Type: application/json; charset=utf-8
+
+{
+  "job_id":"<job_id>",
+  "type":"wms",
+  "args":{}
+}
+```
+
+Then retrieve an image through the OGC WMS interface:
+```GET /wms/<service_id>?service=WMS&amp;request=GetMap HTTP/1.1
 ```

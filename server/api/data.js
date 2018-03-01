@@ -1,14 +1,3 @@
-function getCapabilities() {
-  return [
-	'/data',
-	'/data/{product_id}',
-	'/processes',
-	'/processes/{process_id}',
-	'/jobs',
-	'/download/{job_id}/wcs'
-  ];
-}
-
 function getData(product_id, extended) {
   var data = {
     'product_id': product_id,
@@ -37,14 +26,6 @@ function getData(product_id, extended) {
   return data;
 }
 
-
-function capabilities_get(req, res, next) {
-  const capabilities = getCapabilities();
-
-  res.json(capabilities);
-  return next();
-}
-
 function data_get(req, res, next) {
   const data = [
 	getData('Sentinel2A-L1C')
@@ -64,7 +45,6 @@ function data_byId_get(req, res, next) {
 
 
 module.exports = {
-  capabilities_get,
   data_get,
   data_byId_get
 };

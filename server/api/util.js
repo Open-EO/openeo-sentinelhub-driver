@@ -4,6 +4,10 @@ function createJobCacheKey(uuid) {
   return `job.${uuid}`
 }
 
+function createServiceCacheKey(uuid) {
+  return `service.${uuid}`
+}
+
 function node(process_id_val, argsVal) {
   const ret = {};
 
@@ -52,6 +56,7 @@ function node_product(product_id) {
 
 module.exports = {
   createJobCacheKey,
+  createServiceCacheKey,
   node_product,
   collections_node
 }
