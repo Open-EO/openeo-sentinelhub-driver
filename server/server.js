@@ -15,8 +15,14 @@ server.use(cors.actual)
 
 var cache = require('node-file-cache').create()
 cache.getAll = function() {
-  // ToDo: Implement expiry of elements, see get().
-  return this.db.get('index').value()
+  var data = this.db.get('index').value()
+  return data.filter(elem => {
+    if (elem.life < this._createTimestamp()) {
+       this.expire(elem.key);
+	   return false;
+    }
+	return true;
+  });
 }
 
 console.log(JSON.stringify(cache.get('a')))
