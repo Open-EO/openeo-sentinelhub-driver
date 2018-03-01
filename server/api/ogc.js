@@ -3,13 +3,22 @@ const wkt = require('wellknown')
 const errors = require('restify-errors')
 const JobData = require('./JobData')
 
-const { createJobCacheKey } = require('./util')
+const { createJobCacheKey, createServiceCacheKey } = require('./util')
 const { URLSearchParams } = require('url')
 
-function wcs_get (req, res, next) {
-  const jobId = req.params.job_id
-  const cachedJob = req.storage.get(createJobCacheKey(jobId))
+function wms_get (req, res, next) {
+  if (!req.params.service_id) {
+	  console.log("No service_id arg");
+	return next(new errors.NotFoundError()) 
+  }
+  const service = req.storage.get(createServiceCacheKey(req.params.service_id))
+  if (!service) {
+	  console.log("No service found");
+	return next(new errors.NotFoundError())
+  }
+  const cachedJob = req.storage.get(createJobCacheKey(service.job_id))
   if (!cachedJob) {
+	  console.log("No job found");
     return next(new errors.NotFoundError())
   }
   const job = new JobData(cachedJob)
@@ -36,5 +45,5 @@ function wcs_get (req, res, next) {
 }
 
 module.exports = {
-  wcs_get
+  wms_get
 }

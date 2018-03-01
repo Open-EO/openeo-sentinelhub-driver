@@ -7,19 +7,29 @@ server.use(restify.plugins.bodyParser())
 
 const cors = corsMiddleware({
   preflightMaxAge: 5, // Optional
-  origins: ['*'],
-  allowHeaders: ['API-Token'],
-  exposeHeaders: ['API-Token-Expiry']
+  origins: ['*']
 })
 
 server.pre(cors.preflight)
 server.use(cors.actual)
 
-const cache = require('node-file-cache').create()
+var cache = require('node-file-cache').create()
+cache.getAll = function() {
+  var data = this.db.get('index').value()
+  return data.filter(elem => {
+    if (elem.life < this._createTimestamp()) {
+       this.expire(elem.key);
+	   return false;
+    }
+	return true;
+  });
+}
+
 console.log(JSON.stringify(cache.get('a')))
 
 server.use((req, res, next) => {
   req.storage = cache
+  req.serverUrl = server.url
   next()
 })
 
