@@ -1,4 +1,4 @@
-const { createJobCacheKey, createServiceCacheKey } = require('./util')
+const { createJobCacheKey, createServiceCacheKey, getWmsUrl } = require('./util')
 
 function services_post (req, res, next) {
   try {
@@ -19,13 +19,11 @@ function services_post (req, res, next) {
     const uuid = require('node-uuid').v1()
     req.storage.set(createServiceCacheKey(uuid), serviceInput)
 	
-	console.log("created service with id: " + uuid);
-	
-	var baseUrl = req.serverUrl.replace('[::]', '127.0.0.1');
-	
+	console.log("created service (" + serviceInput.service_type + ") with id: " + uuid);
+
     res.json({
       service_id: uuid,
-      service_url: baseUrl + '/wms/' + uuid,
+      service_url: getWmsUrl(req, uuid),
 	  service_type: serviceInput.service_type,
       service_args: {},
       job_id: serviceInput.job_id
@@ -37,6 +35,14 @@ function services_post (req, res, next) {
   return next()
 }
 
+function services_delete(req, res, next) {
+	req.storage.expire(createServiceCacheKey(req.params.service_id));
+	console.log("deleted service with id: " + req.params.service_id);
+	res.send(200);
+	return next();
+}
+
 module.exports = {
-  services_post
+  services_post,
+  services_delete
 }

@@ -1,4 +1,4 @@
-function capabilities_get() {
+function capabilities_get(req, res, next) {
   res.json([
 	'/capabilities/services',
 	'/data',
@@ -7,12 +7,15 @@ function capabilities_get() {
 	'/processes/{process_id}',
 	'/jobs',
 	'/services',
+	'/services/{service_id}',
+	'/users/{user_id}/jobs',
+	'/users/{user_id}/services',
 	'/wms/{service_id}'
   ]);
   return next();
 }
 
-function services_get() {
+function services_get(req, res, next) {
   res.json([
 	'wms'
   ]);

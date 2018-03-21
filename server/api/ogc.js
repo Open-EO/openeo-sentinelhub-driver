@@ -7,16 +7,18 @@ const { createJobCacheKey, createServiceCacheKey } = require('./util')
 const { URLSearchParams } = require('url')
 
 function wms_get (req, res, next) {
-  const serviceId = req.params.service_id
   if (!req.params.service_id) {
+	  console.log("No service_id arg");
 	return next(new errors.NotFoundError()) 
   }
-  const service = req.storage.get(createServiceCacheKey(serviceId))
+  const service = req.storage.get(createServiceCacheKey(req.params.service_id))
   if (!service) {
+	  console.log("No service found");
 	return next(new errors.NotFoundError())
   }
   const cachedJob = req.storage.get(createJobCacheKey(service.job_id))
   if (!cachedJob) {
+	  console.log("No job found");
     return next(new errors.NotFoundError())
   }
   const job = new JobData(cachedJob)

@@ -13,7 +13,18 @@ const cors = corsMiddleware({
 server.pre(cors.preflight)
 server.use(cors.actual)
 
-const cache = require('node-file-cache').create()
+var cache = require('node-file-cache').create()
+cache.getAll = function() {
+  var data = this.db.get('index').value()
+  return data.filter(elem => {
+    if (elem.life < this._createTimestamp()) {
+       this.expire(elem.key);
+	   return false;
+    }
+	return true;
+  });
+}
+
 console.log(JSON.stringify(cache.get('a')))
 
 server.use((req, res, next) => {
