@@ -18,11 +18,8 @@ module.exports = function(server) {
 
   server.post('/jobs', jobs.job_post);
   
-  server.get('/users/:user_id/files', users.user_files);
-  server.get('/users/:user_id/process_graphs', users.user_process_graphs);
   server.get('/users/:user_id/services', users.user_services);
   server.get('/users/:user_id/jobs', users.user_jobs);
-  server.get('/users/:user_id/credits', users.user_credits);
 
   server.post('/services', services.services_post);
   server.del('/services/:service_id', services.services_delete);

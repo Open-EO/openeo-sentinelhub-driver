@@ -1,11 +1,5 @@
 const { createJobCacheKey, createServiceCacheKey, getWmsUrl } = require('./util')
 
-function user_credits(req, res, next) {
-	res.header('content-type', 'text/plain');
-	res.send(200, "0");
-	return next();
-}
-
 function user_jobs(req, res, next) {
 	var data = req.storage.getAll();
 	var result = [];
@@ -49,34 +43,7 @@ function user_services(req, res, next) {
 	return next();
 }
 
-function user_files(req, res, next) {
-	res.json([
-		{
-			name: "demo.txt",
-			size: 182,
-			modified: "2015-10-20T17:22:10Z"
-		},
-		{
-			name: "demo.tif",
-			size: 183142,
-			modified: "2017-01-01T09:36:18Z"
-		}
-	]);
-	return next();
-}
-
-function user_process_graphs(req, res, next) {
-	res.json([
-		"demo"
-	]);
-	return next();
-}
-
-
 module.exports = {
-	user_credits,
 	user_jobs,
-	user_services,
-	user_files,
-	user_process_graphs
+	user_services
 };

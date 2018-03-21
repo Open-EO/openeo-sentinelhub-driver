@@ -25,6 +25,9 @@ function wms_get (req, res, next) {
 
   const sUrl = 'http://services.sentinel-hub.com/ogc/wcs/ef60cfb1-53db-4766-9069-c5369c3161e6'
   const sQueryParams = req.query
+  for(var i in service.service_args) {
+	  sQueryParams[i] = service.service_args[i];
+  }
   sQueryParams.coverage = 'CUSTOM'
   sQueryParams.temporal = 'true'
   sQueryParams.GEOMETRY = job.geometry ? wkt.stringify(job.geometry) : ''
