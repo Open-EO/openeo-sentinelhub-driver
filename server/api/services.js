@@ -16,7 +16,7 @@ function services_post (req, res, next) {
       throw "No job found with the specified id."
     }
 	
-	serviceInput.service_args = {
+    serviceInput.service_args = {
       name: 'WMS',
       request: 'GetCoverage',
       service: 'WMS',
@@ -29,12 +29,12 @@ function services_post (req, res, next) {
     const uuid = require('node-uuid').v1()
     req.storage.set(createServiceCacheKey(uuid), serviceInput)
 
-	console.log("created service with id: " + uuid);
+    console.log("created service (" + serviceInput.service_type + ") with id: " + uuid)
 
     res.json({
       service_id: uuid,
       service_url: getWmsUrl(req, uuid),
-	  service_type: serviceInput.service_type,
+      service_type: serviceInput.service_type,
       service_args: serviceInput.service_args,
       job_id: serviceInput.job_id
     })

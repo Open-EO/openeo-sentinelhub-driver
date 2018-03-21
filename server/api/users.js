@@ -43,7 +43,6 @@ function user_services(req, res, next) {
 	return next();
 }
 
-
 module.exports = {
 	user_jobs,
 	user_services
