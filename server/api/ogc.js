@@ -6,6 +6,8 @@ const JobData = require('./JobData')
 const { createJobCacheKey, createServiceCacheKey } = require('./util')
 const { URLSearchParams } = require('url')
 
+const API_KEY = /*INSERT API KEY*/ null;
+
 function wms_get (req, res, next) {
   if (!req.params.service_id) {
 	  console.log("No service_id arg");
@@ -23,7 +25,7 @@ function wms_get (req, res, next) {
   }
   const job = new JobData(cachedJob)
 
-  const sUrl = 'http://services.sentinel-hub.com/ogc/wcs/ef60cfb1-53db-4766-9069-c5369c3161e6'
+  const sUrl = 'http://services.sentinel-hub.com/ogc/wcs/' + API_KEY;
   const sQueryParams = req.query
   for(var i in service.service_args) {
 	  sQueryParams[i] = service.service_args[i];
